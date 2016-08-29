@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Ball</title>
+	<style>
+		.ball { width: 40px; height: 40px; border-radius: 20px; margin-top: 10px; }
+		.ball1 { background: blue; }
+		.ball2 { background: red; }
+		.ball3 { background: yellow; }
+	</style>
+	<script src="./node_modules/bluebird/js/browser/bluebird.js"></script>
+	<script>
+		window.onload = function () {
+			var ball1 = document.querySelector('.ball1');
+			var ball2 = document.querySelector('.ball2');
+			var ball3 = document.querySelector('.ball3');
+
+			/**
+			 * [animate description]
+			 * @param  {[type]}   ball     [要运动的球]
+			 * @param  {[type]}   distance [运动的距离]
+			 * @param  {Function} cb       [回掉函数]
+			 * @return {[type]}            [description]
+			 */
+			// function animate (ball, distance, cb) {
+			// 	setTimeout(function () {
+			// 		var marginLeft = parseInt(ball.style.marginLeft, 10);
+
+			// 		if (marginLeft === distance) {
+			// 			cb && cb();
+			// 		} else {
+			// 			if (marginLeft < distance) {
+			// 				marginLeft++;
+			// 			} else {
+			// 				marginLeft--;
+			// 			}
+
+			// 			ball.style.marginLeft = marginLeft + 'px';
+
+			// 			animate(ball, distance, cb);
+			// 		}
+			// 	}, 13); // 1s 60帧
+			// };
+
+			// animate(ball1, 100, function () {
+			// 	animate(ball2, 200, function () {
+			// 		animate(ball3, 300, function () {
+			// 			animate(ball3, 150, function () {
+			// 				animate(ball2, 150, function () {
+			// 					animate(ball1, 150, function () {
+			// 						//
+			// 					})
+			// 				})
+			// 			})
+			// 		})
+			// 	})
+			// });
+
+			var Promise = window.Promise;
+
+			function promiseAnimate (ball, distance) {
+				// 返回一个promise对象
+				// resolve 成功时，通过它来传递
+				// reject 失败时，通过它来传递错误信息
+				return new Promise(function (resolve, reject) {
+					function _animate () {
+						setTimeout(function () {
+							var marginLeft = parseInt(ball.style.marginLeft, 10);
+
+							if (marginLeft === distance) {
+								resolve();
+							} else {
+								if (marginLeft < distance) {
+									marginLeft++;
+								} else {
+									marginLeft--;
+								}
+
+								ball.style.marginLeft = marginLeft + 'px';
+
+								_animate();
+							}
+						}, 13); // 1s 60帧
+					};
+					_animate();
+				});
+			}
+
+			promiseAnimate(ball1, 100)
+				.then(function () {
+					return promiseAnimate(ball2, 200);
+				})
+				.then(function () {
+					return promiseAnimate(ball3, 300);
+				})
+				.then(function () {
+					return promiseAnimate(ball3, 150);
+				})
+				.then(function () {
+					return promiseAnimate(ball2, 150);
+				})
+				.then(function () {
+					return promiseAnimate(ball1, 150);
+				});
+
+
+		};
+
+		
+	</script>
+</head>
+<body>
+	<div id="ball1" class="ball ball1" style="margin-left: 0px"></div>
+	<div id="ball2" class="ball ball2" style="margin-left: 0px"></div>
+	<div id="ball3" class="ball ball3" style="margin-left: 0px"></div>
+</body>
+</html>
